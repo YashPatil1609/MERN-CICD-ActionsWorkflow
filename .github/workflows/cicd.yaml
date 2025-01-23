@@ -3,14 +3,14 @@ name: Build and Deploy a MERN stack application
 on:
     workflow_dispatch:
   
-
 env:
     DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER}}
     DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD}}
     VERSION: ${{ github.sha }}
+    SSH_KEY: ${{ secrets.PRIVATE_KEY }}
 
 jobs:
-    build-and-push:
+    Build-Push:
         name: Build and Push Docker Images
         runs-on: ubuntu-latest
 
@@ -32,4 +32,29 @@ jobs:
             cd ./mern/backend
             docker build -t $DOCKERHUB_USER/mern-backend:$VERSION .
             docker push $DOCKERHUB_USER/mern-backend:$VERSION
+
+    Deploy:
+        name: Deploy the application
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Add SSH Key
+          run: |
+            mkdir -p ~/.ssh
+            echo "$SSH_KEY" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+
+        - name: Copy startup-script and docker-compose to EC2
+          run: |
+            scp -i $SSH_KEY startup-script.sh ubuntu@54.79.136.188:/home/ubuntu
+            scp -i $SSH_KEY docker-compose.yml ubuntu@54.79.136.188:/home/ubuntu
+    
+        - name: Run deployment script on EC2
+          run: |
+            ssh -i $SSH_KEY ubuntu@54.79.136.188 "bash /home/ubuntu/startup-script.sh $VERSION" 
+    
+
             
