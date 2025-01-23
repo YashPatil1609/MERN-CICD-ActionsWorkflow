@@ -7,6 +7,7 @@ on:
 env:
     DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER}}
     DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD}}
+    VERSION: ${{ github.sha }}
 
 jobs:
     build-and-push:
@@ -23,12 +24,12 @@ jobs:
         - name: Build and push Frontend Image
           run: |
             cd ./mern/frontend
-            docker build -t $DOCKERHUB_USER/mern-frontend::${{ github.sha }} .
-            docker push $DOCKERHUB_USER/mern-frontend::${{ github.sha }}
+            docker build -t $DOCKERHUB_USER/mern-frontend:$VERSION .
+            docker push $DOCKERHUB_USER/mern-frontend:$VERSION
 
         - name: Build and push Backend Image
           run: |
             cd ./mern/backend
-            docker build -t $DOCKERHUB_USER/mern-backend::${{ github.sha }} .
-            docker push $DOCKERHUB_USER/mern-backend::${{ github.sha }}
+            docker build -t $DOCKERHUB_USER/mern-backend:$VERSION .
+            docker push $DOCKERHUB_USER/mern-backend:$VERSION
             
