@@ -45,17 +45,17 @@ jobs:
         - name: Add SSH Key
           run: |
             mkdir -p ~/.ssh
-            echo "$SSH_KEY" > ~/.ssh/id_rsa
+            echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
 
         - name: Copy startup-script and docker-compose to EC2
           run: |
-            scp -i $SSH_KEY startup-script.sh ubuntu@54.79.136.188:/home/ubuntu
-            scp -i $SSH_KEY docker-compose.yml ubuntu@54.79.136.188:/home/ubuntu
+            scp -i ~/.ssh/id_rsa startup-script.sh ubuntu@54.79.136.188:/home/ubuntu
+            scp -i ~/.ssh/id_rsa docker-compose.yml ubuntu@54.79.136.188:/home/ubuntu
     
         - name: Run deployment script on EC2
           run: |
-            ssh -i $SSH_KEY ubuntu@54.79.136.188 "bash /home/ubuntu/startup-script.sh $VERSION" 
+            ssh -i ~/.ssh/id_rsa ubuntu@54.79.136.188 "bash /home/ubuntu/startup-script.sh $VERSION" 
     
 
             
