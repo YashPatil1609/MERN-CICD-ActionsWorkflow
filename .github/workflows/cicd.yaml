@@ -23,12 +23,12 @@ jobs:
         - name: Build and push Frontend Image
           run: |
             cd ./mern/frontend
-            docker build -t $DOCKERHUB_USER/mern-frontend:lts .
-            docker push $DOCKERHUB_USER/mern-frontend:lts
+            docker build -t $DOCKERHUB_USER/mern-frontend::${{ github.sha }} .
+            docker push $DOCKERHUB_USER/mern-frontend::${{ github.sha }}
 
         - name: Build and push Backend Image
           run: |
             cd ./mern/backend
-            docker build -t $DOCKERHUB_USER/mern-backend:lts .
-            docker push $DOCKERHUB_USER/mern-backend:lts
+            docker build -t $DOCKERHUB_USER/mern-backend::${{ github.sha }} .
+            docker push $DOCKERHUB_USER/mern-backend::${{ github.sha }}
             
