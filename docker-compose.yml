@@ -2,7 +2,7 @@ services:
   frontend:
     ports:
       - "5173:5173"
-    image: yashpatil16/mernfrontend:${FRONTEND_IMAGE}
+    image: yashpatil16/mern-frontend:${VERSION}
     networks:
       - mern
     environment:
@@ -16,7 +16,7 @@ services:
     
     ports:
       - "5050:5050"
-    image: yashpatil16/mernbackend:${BACKEND_IMAGE}
+    image: yashpatil16/mern-backend:${VERSION}
     networks:
       - mern
     depends_on:
